@@ -116,3 +116,169 @@ You're welcome to make UX improvements or add minor enhancements, as long as the
 ---
 
 We're excited to see how you approach these tasks — feel free to get creative, make reasonable trade-offs, and show us how you think as an engineer. We're particularly interested in your understanding of full-stack development and DevOps practices.
+
+
+
+---
+
+# My Implementation & Approach
+
+This section describes the changes and improvements I made while working on the assignment.
+
+---
+
+## 1. Frontend UI Polish
+
+The frontend layout was redesigned to make the interface cleaner, more responsive, and easier to use.
+
+### Responsive Layout
+
+The layout uses **Flexbox** to ensure the application works well across different screen sizes.
+
+- On **mobile screens**, the form and vendor list appear in a single column.
+- On **larger screens**, the layout switches to a two-column structure where the form and vendor list appear side by side.
+
+This approach keeps the UI simple and readable across devices.
+
+---
+
+### Lightweight Design System
+
+A small design system was introduced using **CSS variables** in `src/style.css`.
+
+These variables define reusable values such as:
+
+- Colors
+- Spacing
+- Typography
+- Border radius
+- Shadows
+
+Example variables:
+--color-primary
+--color-background
+--space-md
+--radius-md
+--shadow-sm
+
+
+Using design tokens makes the styling more consistent and easier to maintain.
+
+---
+
+### Vendor List Enhancements
+
+The vendor list table was improved with several usability enhancements:
+
+- **Zebra striping** to improve readability
+- **Hover states** for rows
+- **Focus styles** for accessibility
+- **Responsive scrolling** for smaller screens
+- An **empty state message** when no vendors are available
+
+Example empty state:
+No vendors found. Add your first vendor!
+
+---
+
+### Light / Dark Theme Toggle
+
+A small visual enhancement was added by implementing a **light/dark theme toggle**.
+
+The theme works by applying a `data-theme` attribute on the root element and switching CSS variables accordingly.
+
+This allows the UI to switch themes without introducing additional libraries.
+
+---
+
+## 2. Fixing the Duplicate Submission Bug
+
+In the original implementation, it was possible to click the **Add Vendor** button multiple times before the form reset, which could result in duplicate entries.
+
+To prevent this, a submission lock was added to the form logic.
+
+When the form is submitted:
+
+- The submit button becomes disabled
+- Additional clicks are ignored while the request is processing
+- The form resets after submission
+
+This improves the form UX and prevents accidental duplicate submissions.
+
+---
+
+## 3. Unique Vendor Emails
+
+Vendor emails should ideally be unique across the system so that the same vendor cannot be registered multiple times.
+
+Since the focus of my work was primarily on the **frontend improvements**, I did not modify the backend implementation in this repository.
+
+However, while working on the solution I considered how this should ideally be implemented in a real system.
+
+### Recommended Approach
+
+In a production system, uniqueness should be enforced across multiple layers.
+
+**Database Layer**
+
+The email column should have a **UNIQUE constraint** to guarantee that duplicate email addresses cannot be stored.
+
+**Backend Layer**
+
+Before inserting a new vendor, the backend should check whether a vendor with the same email already exists and return an appropriate error response if a conflict is detected.
+
+**Frontend Layer**
+
+The frontend should display the error message returned by the API so the user understands why the vendor could not be added.
+
+### Reasoning
+
+Frontend validation alone cannot guarantee uniqueness because API requests can bypass the UI.  
+For this reason, enforcing the constraint in the **database and backend layers** is the most reliable approach, while the frontend focuses on providing clear feedback to the user.
+
+---
+
+## Assumptions and Trade-offs
+
+Since the primary focus of this assignment was the frontend, I focused on improving the UI, responsiveness, and user experience while keeping the implementation simple.
+
+Backend functionality was left mostly unchanged except where required to understand how the frontend interacts with the API.
+
+---
+
+## Running the Project
+
+### Start Backend
+cd backend-node
+npm install
+npm run dev
+
+Backend runs on: http://localhost:3000
+
+
+### Start Frontend
+cd frontend
+npm install
+npm run dev
+
+
+Frontend runs on: http://localhost:5173
+
+
+---
+
+## Reflection
+
+### What I love most about being a software engineer
+
+What I enjoy most about software engineering is the ability to build solutions that solve real problems. I find it rewarding to take an idea and gradually turn it into a working system through design, coding, testing, and iteration.
+
+### What is most important to me when working in a team
+
+Clear communication and trust are the most important aspects of working in a team. When team members openly share ideas, feedback, and challenges, it becomes much easier to solve problems collaboratively and deliver better results.
+
+### What is the worst part of being a software engineer
+
+One of the more challenging aspects of software engineering is dealing with unclear requirements or constantly changing specifications. It can sometimes slow down development, but it also highlights the importance of communication and adaptability.
+
+

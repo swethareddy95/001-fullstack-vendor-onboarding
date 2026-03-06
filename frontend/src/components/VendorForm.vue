@@ -4,160 +4,189 @@
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="name">Name:</label>
-        <input 
-          id="name" 
-          v-model="form.name" 
-          type="text" 
-          required 
+        <input
+          id="name"
+          v-model="form.name"
+          type="text"
+          required
           placeholder="Company name"
         />
       </div>
-      
+
       <div class="form-group">
         <label for="contactPerson">Contact Person:</label>
-        <input 
-          id="contactPerson" 
-          v-model="form.contact_person" 
-          type="text" 
-          required 
+        <input
+          id="contactPerson"
+          v-model="form.contact_person"
+          type="text"
+          required
           placeholder="Contact person name"
         />
       </div>
-      
+
       <div class="form-group">
         <label for="email">Email:</label>
-        <input 
-          id="email" 
-          v-model="form.email" 
-          type="email" 
-          required 
+        <input
+          id="email"
+          v-model="form.email"
+          type="email"
+          required
           placeholder="contact@example.com"
         />
       </div>
-      
+
       <div class="form-group">
         <label for="partnerType">Partner Type:</label>
-        <select 
-          id="partnerType" 
-          v-model="form.partner_type" 
-          required
-        >
+        <select id="partnerType" v-model="form.partner_type" required>
           <option value="Supplier">Supplier</option>
           <option value="Partner">Partner</option>
         </select>
       </div>
-      
+
       <div class="form-actions">
-        <button type="submit" :disabled="vendorStore.loading">
-          {{ vendorStore.loading ? 'Submitting...' : 'Add Vendor' }}
+        <button type="submit" :disabled="isSubmitting || vendorStore.loading">
+          {{ isSubmitting ? "Submitting..." : "Add Vendor" }}
         </button>
-        <div v-if="vendorStore.error" class="error-message">{{ vendorStore.error }}</div>
-        <div v-if="success" class="success-message">Vendor added successfully!</div>
+        <div v-if="vendorStore.error" class="error-message">
+          {{ vendorStore.error }}
+        </div>
+        <div v-if="success" class="success-message">
+          Vendor added successfully!
+        </div>
       </div>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { useVendorStore } from '../stores/vendorStore';
-import type { Vendor } from '../types/Vendor';
+import { reactive, ref } from "vue";
+import { useVendorStore } from "../stores/vendorStore";
+import type { Vendor } from "../types/Vendor";
 
 const vendorStore = useVendorStore();
 
 const form = reactive<Vendor>({
-  name: '',
-  contact_person: '',
-  email: '',
-  partner_type: 'Supplier'
+  name: "",
+  contact_person: "",
+  email: "",
+  partner_type: "Supplier",
 });
 
 const success = ref(false);
 
 const resetForm = () => {
-  form.name = '';
-  form.contact_person = '';
-  form.email = '';
-  form.partner_type = 'Supplier';
+  form.name = "";
+  form.contact_person = "";
+  form.email = "";
+  form.partner_type = "Supplier";
 };
 
+const isSubmitting = ref(false);
+
 const submitForm = async () => {
+  if (isSubmitting.value) return;
+
+  isSubmitting.value = true;
   success.value = false;
-  
+
   try {
     await vendorStore.addVendor({ ...form });
+
     success.value = true;
-    
-    // Reset the form after successful submission
+
     setTimeout(() => {
       resetForm();
       success.value = false;
+
+      isSubmitting.value = false; //allow submission again after reset
     }, 2000);
   } catch (err) {
-    // Error is already handled in the store
+    isSubmitting.value = false;
   }
 };
 </script>
 
 <style scoped>
 .vendor-form {
-  max-width: 500px;
-  margin: 20px 0;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  width: 100%;
+  background: var(--color-surface);
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
 }
 
+.vendor-form h2 {
+  margin-bottom: var(--space-md);
+}
+
+/* Form layout */
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: var(--space-md);
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
 }
 
+/* Inputs */
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+  padding: var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
+/* Focus state */
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Actions */
 .form-actions {
-  margin-top: 20px;
+  margin-top: var(--space-md);
 }
 
+/* Button */
 button {
-  padding: 10px 15px;
-  background-color: #4CAF50;
+  background: var(--color-primary);
   color: white;
+  padding: var(--space-sm) var(--space-md);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 16px;
+  font-weight: 600;
 }
 
-button:hover {
-  background-color: #45a049;
+@media (hover: hover) {
+  button:hover {
+    background: var(--color-primary-hover);
+  }
 }
 
 button:disabled {
-  background-color: #cccccc;
+  background: #cbd5e1;
   cursor: not-allowed;
 }
 
+/* Messages */
 .error-message {
-  color: #f44336;
-  margin-top: 10px;
+  color: #dc2626;
+  margin-top: var(--space-sm);
 }
 
 .success-message {
-  color: #4CAF50;
-  margin-top: 10px;
+  color: #16a34a;
+  margin-top: var(--space-sm);
 }
 </style>
